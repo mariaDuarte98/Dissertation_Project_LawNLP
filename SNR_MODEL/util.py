@@ -16,15 +16,44 @@ import tensorflow.compat.v1 as tf
 tf.compat.v1.disable_v2_behavior()
 import pyhocon
 
-def initialize_from_env():
-  name = sys.argv[1]
+def initialize_from_env(opt = False, sub_name = None, dimensions = None ):
+  if sub_name:
+    name = sub_name
+  else:
+    name = sys.argv[1]
   print("Running experiment: {}".format(name))
+  if name in pyhocon.ConfigFactory.parse_file("models.conf"):
+    config = pyhocon.ConfigFactory.parse_file("models.conf")[name]
+    print(pyhocon.HOCONConverter.convert(config, "hocon"))
+    config["log_dir"] = mkdirs(os.path.join(config["log_root"], name))
+    return config
+  elif opt:
+    base = pyhocon.ConfigFactory.parse_file("models.conf")[sys.argv[1]]
+    
+    [learning_rate, ffnn_size, contextualization_size, decay_rate] = dimensions #,contextualization_layers, max_gradient_norm, lstm_dropout_rate, lexical_dropout_rate, dropout_rate] = dimensions
+    base["learning_rate"] = learning_rate
+    base["ffnn_size"] = ffnn_size
+    base["contextualization_size"] = contextualization_size
+    base["decay_rate"] = decay_rate
+    #base["contextualization_layers"] = contextualization_layers
+    #base["max_gradient_norm"] = max_gradient_norm
+    #base["lstm_dropout_rate"] = lstm_dropout_rate
+    #base["lexical_dropout_rate"] = lexical_dropout_rate
+    #base["dropout_rate"] = dropout_rate
+    #base[name] = base[sys.argv[1]]
+    #print(base[name])
+    to_text = name + " = { "  + pyhocon.HOCONConverter.convert(base, "hocon")  + "}"
+    file_exp = open("models.conf", "a")
+    file_exp.write("\n")
+    file_exp.write(to_text)
+    file_exp.close()
+    config = pyhocon.ConfigFactory.parse_file("models.conf")[name]
 
-  config = pyhocon.ConfigFactory.parse_file("experiments.conf")[name]
-  config["log_dir"] = mkdirs(os.path.join(config["log_root"], name))
 
-  print(pyhocon.HOCONConverter.convert(config, "hocon"))
-  return config
+        
+
+    config["log_dir"] = mkdirs(os.path.join(config["log_root"], name))
+    return config
 
 def copy_checkpoint(source, target):
   for ext in (".index", ".data-00000-of-00001"):
@@ -173,7 +202,7 @@ def biaffine_mapping(vector_set_1,
     the output size is 1 or a labeled tree otherwise.
 
   """
-  with tf.variable_scope('Bilinear'):
+  with tf.variable_scope('Bilinear'):#, reuse=tf.AUTO_REUSE):
     # Dynamic shape info
     batch_size = tf.shape(vector_set_1)[0]
     bucket_size = tf.shape(vector_set_1)[1]
