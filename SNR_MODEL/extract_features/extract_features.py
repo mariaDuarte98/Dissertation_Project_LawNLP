@@ -11,7 +11,7 @@ import datetime
 import sys
 
 print(datetime.datetime.now())
-device = "cuda:0" if torch.cuda.is_available() else "cpu" #can change to other gpus, if no gpu is found cpu will be used instead
+device = "cuda:1" if torch.cuda.is_available() else "cpu" #can change to other gpus, if no gpu is found cpu will be used instead
 
 if  sys.argv[1] == 'base': #if it is the baseline approch create embeedings for sentences without Norms
     files = ["trainAfterRules_26_07_2021_old_READY_NORMS.jsonl","valAfterRules_26_07_2021_old_READY_NORMS.jsonl", "testAfterRules_26_07_2021_old_READY_NORMS.jsonl"]
@@ -20,16 +20,16 @@ elif sys.argv[1] == 'not_base_train': #if it is not the baseline approch, but st
     files = ["trainAfterRules_26_07_2021_cor_READY_READY_SR.jsonl","valAfterRules_26_07_2021_cor_READY_READY_SR.jsonl"]#,"testAfterRules_16_07_2021_cor_READY_READY_SR.jsonl"]
     output_emb = 'bert_hugfterRules_26_07_WithNorms_cor.hdf5'
     
-elif sys.argv[1] == 'predict': #to make predictions for baseline, after generation is done, need to change "lm_path" in  experiments.conf file
+elif sys.argv[1] == 'predict': #to make predictions for baseline, after generation is done (needs to be consistent with "lm_path" in  experiments.conf file)
     files = ["input_set.jsonl"]
     output_emb = 'input_set.hdf5'
     
-#elif sys.argv[1] == 'predict': #to make predictions for other approaches, after generation is done, need to change "lm_path" in  experiments.conf file
-#    files = ["input_set_withNorms.jsonl"]  --> file that has the segments with the norms predictions, so that NE and SR can be predicted as well
-#    output_emb = 'input_set_withNorms.hdf5' --> need to change "lm_path" in  experiments.conf file for the corresponding models
+elif sys.argv[1] == 'predict_2level': #to make predictions for two phased and hybrid models, after generation is done (needs to be consistent with "lm_path" in  experiments.conf file)
+    files = ["input_set_withNorms_SR.jsonl"]
+    output_emb = 'input_set_withNorms.hdf5'
 
 else: #if it is not the baseline approch, add embeedings for sentences with predicted Norms
-    files = ["testAfterRules_26_07_2021_cor_READY_READY_SR.jsonl"]
+    files = ["testAfterRules_26_07_2021_old_READY_READY_SR.jsonl"]
     output_emb = 'bert_hugfterRules_26_07_WithNorms_cor.hdf5'
     
 sentences = {}
