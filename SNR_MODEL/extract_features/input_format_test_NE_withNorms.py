@@ -2,7 +2,9 @@
 
 import json
 import os
+import sys
 
+# this script was used to create the input testtest/predict  file for the NE with Norms model by adding the relevant predicted NEs (defined in experiments.conf file)
 
 less100 = ["IGNORE", "REF", "URL", "SITUATION", "RESULT", "NE_","NE_ORG", "RATIONALE",  "NE_OFFICE", "NE_PERSON","TIME_", "TIME_DATE_ABS", "TIME_DATE_REL_ENUNC", "TIME_FREQ", "DEF-EXCLUSION", "DEF-EXEMPLUM", "AGENT", "PATIENT" ]
 
@@ -11,8 +13,10 @@ NE_labels = ["LREF","TREF","NE_ADM","TIME_DATE_REL_TEXT","TIME_DURATION"]
 
 punctuation = [".",":","!","?",";",","]
 
-
-new_corpus = open('testAfterRules_26_07_2021_cor_READY.jsonl','r') #this files correspond to the annotations of the test set
+if sys.argv[1] != 'predict':
+    new_corpus = open('testAfterRules_26_07_2021_cor_READY.jsonl','r') #this files correspond to the annotations of the test set
+else:
+    new_corpus = open('input_set0.jsonl','r')#this files correspond to the annotations of the predicted set
 lines = new_corpus.readlines()
 sentences = [json.loads(jline) for jline in lines]
 new_corpus.close()
@@ -81,11 +85,16 @@ for sentence in sentences:
     final_ners.append(sent_n)
     real_final_sents.append(final_sent)
 
-    
-if os.path.exists("testAfterRules_26_07_2021_cor_READY_READY_NE.jsonl"):
-    os.remove("testAfterRules_26_07_2021_cor_READY_READY_NE.jsonl")
-ex = open('testAfterRules_26_07_2021_cor_READY_READY_NE.jsonl','w')
-print('testAfterRules_26_07_2021_cor_READY_READY_NE')
+if sys.argv[1] != 'predict':
+    if os.path.exists("testAfterRules_26_07_2021_cor_READY_READY_NE.jsonl"):
+        os.remove("testAfterRules_26_07_2021_cor_READY_READY_NE.jsonl")
+    ex = open('testAfterRules_26_07_2021_cor_READY_READY_NE.jsonl','w')
+    print('testAfterRules_26_07_2021_cor_READY_READY_NE')
+else:
+    if os.path.exists("input_set_withNorms_NE.jsonl"):
+        os.remove("input_set_withNorms_NE.jsonl")
+    ex = open('input_set_withNorms_NE.jsonl','w')
+    print('input_set_withNorms_NE')
 print(len(final_ids))
 
 for index in range(0,len(final_ids)):

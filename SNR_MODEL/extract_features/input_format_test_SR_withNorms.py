@@ -2,6 +2,9 @@
 
 import json
 import os
+import sys
+
+# this script was used to create the input test/predict file for the SR with Norms model by adding the relevant predicted SRs (defined in experiments.conf file)
 
 labels = ["DEFINIENDUM","DEFINIENS","DEF-INCLUSION","DEF-EXCLUSION","DEF-EXEMPLUM","SCOPE","ACTION","CONDITION","CONCESSION","PURPOSE","EXPERIENCER","AGENT","PATIENT","OBJECT","THEME","EXCEPTION","EFFECT","RATIONALE","NEG"] #SRs
 
@@ -10,7 +13,10 @@ less100 = ["IGNORE", "REF", "URL", "SITUATION", "RESULT", "NE_","NE_ORG", "RATIO
 
 punctuation = [".",":","!","?",";",","]
 
-new_corpus = open('testAfterRules_26_07_2021_cor_READY.jsonl','r') #this files correspond to the annotations of the test set
+if sys.argv[1] != 'predict':
+    new_corpus = open('testAfterRules_26_07_2021_cor_READY.jsonl','r') #this files correspond to the annotations of the test set
+else:
+    new_corpus = open('input_set0.jsonl','r')#this files correspond to the annotations of the predicted set
 lines = new_corpus.readlines()
 sentences = [json.loads(jline) for jline in lines]
 new_corpus.close()
@@ -79,10 +85,17 @@ for sentence in sentences:
     final_ners.append(sent_n)
     real_final_sents.append(final_sent)
 
-if os.path.exists("testAfterRules_26_07_2021_cor_READY_READY_SR.jsonl"):
-    os.remove("testAfterRules_26_07_2021_cor_READY_READY_SR.jsonl")
-ex = open('testAfterRules_26_07_2021_cor_READY_READY_SR.jsonl','w')
-print('testAfterRules_26_07_2021_cor_READY_READY_SR')
+if sys.argv[1] != 'predict':
+    if os.path.exists("testAfterRules_26_07_2021_cor_READY_READY_SR.jsonl"):
+        os.remove("testAfterRules_26_07_2021_cor_READY_READY_SR.jsonl")
+    ex = open('testAfterRules_26_07_2021_cor_READY_READY_SR.jsonl','w')
+    print('testAfterRules_26_07_2021_cor_READY_READY_SR')
+    print(len(final_ids))
+else:
+    if os.path.exists("input_set_withNorms_SR.jsonl"):
+        os.remove("input_set_withNorms_SR.jsonl")
+    ex = open('input_set_withNorms_SR.jsonl','w')
+    print('input_set_withNorms_SR')
 print(len(final_ids))
 
 for index in range(0,len(final_ids)):

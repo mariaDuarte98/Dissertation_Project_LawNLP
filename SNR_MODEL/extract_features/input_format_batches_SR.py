@@ -2,7 +2,7 @@
 
 import json
 
-# this file was used to turn the each set of data from the prodigy annotation format to the system input format
+# this script was used to extract the relevant annotated SRs from the files 'trainAfterRules_26_07_2021_cor_READY', 'valAfterRules_26_07_2021_cor_READY','testAfterRules_26_07_2021_cor_READY' that had all the annotated concepts. So that an input file for the SR related models could be used as input (defined in experiments.conf file)
 
 ner_labels_first_level = 'DEF,OBLIG,RIGHT,LEFFECT,INTRO,IGNORE'
 
