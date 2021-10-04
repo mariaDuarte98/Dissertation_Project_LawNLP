@@ -16,7 +16,7 @@ import pandas
 
 
 if __name__ == "__main__":
-  os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+  os.environ["CUDA_VISIBLE_DEVICES"] = "1"
   config = util.initialize_from_env()
 
   model = biaffine_ner_model.BiaffineNERModel(config)

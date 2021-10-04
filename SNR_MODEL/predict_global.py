@@ -15,10 +15,20 @@ import json
 import pandas
 
 
+
 if __name__ == "__main__":
+
+  # if no embeddins calculated uncomment the following lines
+  #current_dir = os.getcwd()
+  #os.chdir(current_dir + '/extract_features')
+  #print("embeddings")
+  #os.system('python extract_features4.py predict') #to create embeddings for the preidct set ( defined in models.conf)
+  #os.chdir(current_dir)
+  
   config = util.initialize_from_env()
-  if os.path.exists("Model_pred_labels.jsonl"):
+  if os.path.exists("Model_pred_labels.jsonl"):  # results will be saved in this file, this is only to erase previous results
     os.remove("Model_pred_labels.jsonl")
+    
   if "baseline" in config["log_dir"]:
       models = config['models']
       for model in models:
@@ -40,12 +50,13 @@ if __name__ == "__main__":
       #the file in these scripts needs to be the corresponding value(predict_path) in the ocnfiguration of the models
       for model in pahse2_models:
         if "NE" in model:
-            os.system('python input_format_test_NE_withNorms.py')
+            os.system('python input_format_test_NE_withNorms.py predict')
         else: #"SR" in model
-            os.system('python input_format_test_SR_withNorms.py')
+            print('input_format_test_SR_withNorms')
+            os.system('python input_format_test_SR_withNorms.py predict')
     
       #Created embeddings for sentences with the predicted norms calculated before
-      os.system('python extract_features4.py not_base_test')
+      os.system('python extract_features4.py predict_2level')
      
       os.chdir(current_dir)
       print("Start of evaluation second level models")
