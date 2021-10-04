@@ -16,6 +16,8 @@ import tensorflow.compat.v1 as tf
 tf.compat.v1.disable_v2_behavior()
 import pyhocon
 
+#change "models.conf to "experiments2_new.conf" if do not want to predict but to train
+
 def initialize_from_env(opt = False, sub_name = None, dimensions = None ):
   if sub_name:
     name = sub_name
