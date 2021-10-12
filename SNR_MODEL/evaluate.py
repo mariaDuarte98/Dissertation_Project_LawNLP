@@ -42,23 +42,10 @@ if __name__ == "__main__":
   session_config.gpu_options.allow_growth = True
   session_config.allow_soft_placement = True
   with tf.Session(config=session_config) as session:
-    if config['max_step'] == 0:
-        session.run(tf.global_variables_initializer())
-        summary, m_f1, pre, rec, pred_ners, predicted_sentences, ners_maps, gold_ners, predicted_sentences_ids, loss, gold_labels = model.evaluate(session,is_final_test=True,evaluate_loss=True, eval_train_path=True)
-        print("train set")
-        print(m_f1)
-        print(loss/config["dataset_size"]*0.9)
-        print(loss/gold_labels)
-        print(gold_labels)
-    else:
-        model.restore(session)
-
+    
+    model.restore(session)
     summary, m_f1, pre, rec, pred_ners, predicted_sentences, ners_maps, gold_ners, predicted_sentences_ids, loss, gold_labels = model.evaluate(session,is_final_test=True, evaluate_loss=True, eval_train_path=False)
-    print("test set")
-    print(m_f1)
-    print(loss/config["dataset_size"]*0.1)
-    print(loss/gold_labels)
-    print(gold_labels)
+
 
   
   #labels = ["OBJECT", "DEFINIENS", "DEFINIENDUM", "TIME_DATE_REL_TEXT", "SCOPE", "EFFECT"]
